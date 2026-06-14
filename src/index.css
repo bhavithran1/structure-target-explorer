@@ -1,1 +1,50 @@
 @import "tailwindcss";
+
+:root {
+  --bg: #080c08;
+  --bg2: #0d120d;
+  --border: #1a2e1a;
+  --green: #00ff88;
+  --green-dim: #00cc6a;
+  --cyan: #00d4ff;
+  --text: #b8cbb8;
+  --text-dim: #5a7a5a;
+  --red: #ff4455;
+  --yellow: #ffcc00;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+}
+
+::selection { background: var(--green); color: #000; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes glow {
+  0%,100% { text-shadow: 0 0 4px var(--green), 0 0 8px var(--green); }
+  50% { text-shadow: 0 0 8px var(--green), 0 0 20px var(--green), 0 0 40px var(--green-dim); }
+}
+
+.terminal-cursor::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
+  color: var(--green);
+}
+
+.glow-text { animation: glow 3s ease-in-out infinite; }
+
+.fade-in { animation: fadeIn 0.4s ease both; }
