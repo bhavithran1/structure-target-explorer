@@ -1,16 +1,18 @@
 import { useDarkMode } from './hooks/useDarkMode';
 import DarkToggle from './components/DarkToggle';
 import { useState } from 'react';
-import { Dna, ExternalLink, Loader, AlertTriangle } from 'lucide-react';
+import { Dna, ExternalLink, Loader, AlertTriangle, Gamepad2, FlaskConical } from 'lucide-react';
 import SearchBar from './components/SearchBar';
 import ProteinCard from './components/ProteinCard';
 import StructureViewer from './components/StructureViewer';
 import PocketPanel from './components/PocketPanel';
 import ConfidenceChart from './components/ConfidenceChart';
+import ProteinGame from './components/ProteinGame';
 import { searchUniProt, getAlphaFoldStructure, fetchPDBFile, parsePDB, computePocketHeuristic, esmFoldFromSequence, getUniProtSequence } from './utils/api';
 
 export default function App() {
   const [dark, toggleDark] = useDarkMode();
+  const [appMode, setAppMode] = useState('explorer'); // 'explorer' | 'game'
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState(null);
   const [selectedProtein, setSelectedProtein] = useState(null);
@@ -87,9 +89,23 @@ export default function App() {
               <p className="text-xs text-gray-400 mt-0.5">AlphaFold · UniProt · PDB</p>
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5 gap-0.5">
+              <button
+                onClick={() => setAppMode('explorer')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${appMode === 'explorer' ? 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+              >
+                <FlaskConical className="w-3 h-3" /> Explorer
+              </button>
+              <button
+                onClick={() => setAppMode('game')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${appMode === 'game' ? 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+              >
+                <Gamepad2 className="w-3 h-3" /> Hero Game
+              </button>
+            </div>
             <a href="https://alphafold.ebi.ac.uk" target="_blank" rel="noopener noreferrer"
-               className="text-xs text-gray-400 hover:text-indigo-500 flex items-center gap-1 mr-2">
+               className="text-xs text-gray-400 hover:text-indigo-500 flex items-center gap-1">
               AlphaFold <ExternalLink className="w-3 h-3" />
             </a>
             <DarkToggle dark={dark} toggle={toggleDark} />
@@ -97,7 +113,12 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      {appMode === 'game' && (
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          <ProteinGame />
+        </main>
+      )}
+      {appMode === 'explorer' && <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Explore Protein Structures & Binding Pockets
@@ -217,7 +238,7 @@ export default function App() {
             ))}
           </div>
         )}
-      </main>
+      </main>}
     </div>
   );
 }
